@@ -1,0 +1,26 @@
+@BASE_URL = http://localhost:8899
+
+#Login
+POST {{BASE_URL}}/api/auth/login
+Content-Type: application/json
+
+{
+    "identity": "andy@ggg.mail",
+    "password": "123456" 
+}
+
+
+###
+#Get me
+GET {{BASE_URL}}/api/auth/me
+
+
+###
+#Register
+POST {{BASE_URL}}/api/auth/register
+
+
+###
+#Post message
+POST {{BASE_URL}}/api/post
+Content-Type: application/json
