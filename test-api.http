@@ -18,12 +18,21 @@ GET {{BASE_URL}}/api/auth/me
 ###
 #Register
 POST {{BASE_URL}}/api/auth/register
+Content-Type: application/json
+
+{
+    #  "identity" : "andy",
+     "identity" : "11111111112",
+# "identity" : "andeez@ggg.mail",
+"firstName" : "someone", "lastName" : "codecamp", "password" : "123456", "confirmPassword" : "123456"
+}
 
 
 ###
 #Post message
 POST {{BASE_URL}}/api/post
 Content-Type: application/json
+
 
 ###
 #notfound test
