@@ -1,11 +1,11 @@
 @BASE_URL = http://localhost:8899
-
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNzczMzcyMjQyLCJleHAiOjE3NzQ2NjgyNDJ9.8U-ke3DbBY21HvYTzdoeU_Nabrnj3WOMLgPLZnLzTHM
 #Login
 POST {{BASE_URL}}/api/auth/login
 Content-Type: application/json
 
 {
-    "identity": "andy@ggg.mail",
+    "identity": "1111111111",
     "password": "123456" 
 }
 
@@ -13,18 +13,20 @@ Content-Type: application/json
 ###
 #Get me
 GET {{BASE_URL}}/api/auth/me
-
-
+Authorization:{{token}}
 ###
 #Register
 POST {{BASE_URL}}/api/auth/register
 Content-Type: application/json
 
 {
-    #  "identity" : "andy",
-     "identity" : "11111111112",
+#  "identity" : "sandy",
+"identity" : "54444444444",
 # "identity" : "andeez@ggg.mail",
-"firstName" : "someone", "lastName" : "codecamp", "password" : "123456", "confirmPassword" : "123456"
+"firstName" : "somebody", 
+"lastName" : "codecamp", 
+"password" : "123456", 
+"confirmPassword" : "123456"
 }
 
 

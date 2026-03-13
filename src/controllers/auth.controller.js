@@ -1,59 +1,70 @@
 import bcrypt from 'bcrypt'
 import createHttpError from 'http-errors'
-import identityKeyCheck from '../utils/identity.util.js'
 import { prisma } from '../lib/prisma.js'
+import { loginSchema, registerSchema } from '../validations/schema.js'
+import jwt from 'jsonwebtoken'
+import { createUser, getUserBy } from '../services/user.service.js'
 
 export async function register(req, res, next) {
-    const { identity, firstName, lastName, password, confirmPassword } = req.body
 
     // Validation
-    if (!identity.trim() || !firstName.trim() || !lastName.trim() || !password.trim() || !confirmPassword.trim()) {
-        return next(createHttpError[400]('Please fill all input'))
-    }
-    if (confirmPassword !== password) {
-        return next(createHttpError[400]('Check confirm password'))
-    }
+    const data = await registerSchema.parseAsync(req.body)
+    console.log('data =', data)
 
     // check idedntity is email or mobile
-    const identityKey = identityKeyCheck(identity)
-    console.log(identityKey)
-    if (!identityKey) {
-        return next(createHttpError[400]("Identity must be email or mobile phone number"))
-    }
+    const identityKey = data.email ? 'email' : 'mobile'
 
     // Find user for non-duplicate
-    const foundUser = await prisma.user.findUnique({
-        where: { [identityKey]: identity }
-    })
-    // console.log(foundUser)
+    const foundUser = await getUserBy(identityKey, data[identityKey])
     if (foundUser) {
         return next(createHttpError[409]("This user is already exists"))
     }
 
     // Create new user
-    const newUser = {
-        [identityKey] : identity,
-        password : await bcrypt.hash(password, 8),
-        firstName : firstName,
-        lastName : lastName
+    const createdUser = await createUser(data)
+    const userInfo = {
+        id: createdUser.id,
+        [identityKey]: data.identity,
+        firstName: createdUser.firstName,
+        lastName: createdUser.lastName
     }
-    const createdUser = await prisma.user.create({
-        data: newUser
-    })
-    console.log(createdUser)
 
     res.json({
         message: 'Register succesful',
-        user: createdUser
+        user: userInfo
     })
 }
 export async function login(req, res, next) {
+    const data = loginSchema.parse(req.body)
+    const identityKey = data.email ? "email" : "mobile"
+    // Find this User
+    const foundUser = await prisma.user.findFirst({
+        where: { [identityKey]: data[identityKey] }
+    })
+    if (!foundUser) {
+        return next(createHttpError[409]('Invalid login 1'))
+    }
+
+    //  Check password
+    let pwOk = await bcrypt.compare(data.password, foundUser.password)
+    if (!pwOk) {
+        return next(createHttpError[409]('Invalid login 2'))
+    }
+    // Create Token
+    const payload = {id: foundUser.id}
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+        algorithm: 'HS256',
+        expiresIn: '15d'
+    })
+    const {password, createdAt, updatedAt, ...userInfo} = foundUser
     res.json({
-        msg: 'Login Controller',
-        body: req.body
+        message: "login Done",
+        token: token,
+        user: userInfo,
     })
 }
 
 export async function getMe(req, res, next) {
-    res.json({ msg: 'GetMe controller' })
+    // console.log('in get me', req.user)
+    res.json({user: req.user})
 }

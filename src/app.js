@@ -9,7 +9,7 @@ app.use(express.json())
 
 app.use('/api/auth', authRoute)
 app.use('/api/post', (req, res) => {
-    res.send('post service')
+res.send('post service')
 })
 app.use('/api/comment', (req, res) => {
     res.send('comment service')
