@@ -42,13 +42,13 @@ export async function login(req, res, next) {
         where: { [identityKey]: data[identityKey] }
     })
     if (!foundUser) {
-        return next(createHttpError[409]('Invalid login 1'))
+        return next(createHttpError[401]('Invalid login 1'))
     }
 
     //  Check password
     let pwOk = await bcrypt.compare(data.password, foundUser.password)
     if (!pwOk) {
-        return next(createHttpError[409]('Invalid login 2'))
+        return next(createHttpError[401]('Invalid login 2'))
     }
     // Create Token
     const payload = {id: foundUser.id}

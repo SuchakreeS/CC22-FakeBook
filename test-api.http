@@ -1,5 +1,5 @@
 @BASE_URL = http://localhost:8899
-@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNzczMzcyMjQyLCJleHAiOjE3NzQ2NjgyNDJ9.8U-ke3DbBY21HvYTzdoeU_Nabrnj3WOMLgPLZnLzTHM
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNzczNjI5OTE5LCJleHAiOjE3NzQ5MjU5MTl9.DRZk-TqUc_vKHmHarbc21dNqrV1KxkD_3HnWl_cql5I
 #Login
 POST {{BASE_URL}}/api/auth/login
 Content-Type: application/json
